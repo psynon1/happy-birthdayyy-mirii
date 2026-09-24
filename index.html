@@ -1,114 +1,238 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <audio id="bg-music" loop>
-      <source src="gib.mp3" type="audio/mpeg" />
-    </audio>
-    <script>
-      /* Enable audio on click */
-      function enableAudioOnInteraction() {
-        const music = document.getElementById("bg-music");
-        music.play().catch(() => {
-          console.log("Autoplay blocked, user interaction required.");
-        });
-        document.removeEventListener("click", enableAudioOnInteraction);
-      }
-      document.addEventListener("click", enableAudioOnInteraction);
-    </script>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
+    />
+
     <link rel="icon" href="flowers.png" type="image/x-icon" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HAPPY BIRTHDAY MIRI<3</title>
+
+    <title>HAPPY BIRTHDAY MIRI &lt;3</title>
 
     <style>
+      /* =========================
+       RESET
+    ========================= */
+
       * {
-        padding: 0;
         margin: 0;
+        padding: 0;
         box-sizing: border-box;
         font-family: "Poppins", sans-serif;
       }
+
+      html,
       body {
-        background-image: url("Screenshot_2.png");
-        background-size: auto;
+        width: 100%;
+        min-height: 100%;
       }
+
+      /* =========================
+       PAGE / BACKGROUND
+    ========================= */
+
+      body {
+        min-height: 100dvh;
+
+        background-image: url("Screenshot_2.png");
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        overflow: hidden;
+      }
+
+      /* =========================
+       RESPONSIVE CARD AREA
+       
+       This area changes size,
+       while the actual card keeps
+       its original 640 x 400 ratio.
+    ========================= */
+
+      .card-frame {
+        position: relative;
+
+        width: min(92vw, 640px);
+        aspect-ratio: 640 / 400;
+
+        display: flex;
+        justify-content: flex-start;
+        align-items: flex-start;
+
+        overflow: visible;
+      }
+
+      /* =========================
+       SCALING WRAPPER
+       
+       IMPORTANT:
+       The responsive scale is applied
+       HERE instead of .card.
+
+       This means the card's 3D
+       animation and responsive scaling
+       don't fight each other.
+    ========================= */
+
+      .card-scale {
+        position: absolute;
+
+        width: 640px;
+        height: 400px;
+
+        left: 0;
+        top: 0;
+
+        transform-origin: top left;
+
+        transform: scale(var(--card-scale, 1));
+      }
+
+      /* =========================
+       ORIGINAL CARD
+       640 x 400
+    ========================= */
 
       .card {
         width: 640px;
         height: 400px;
-        position: absolute;
-        margin: auto;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        -webkit-perspective: 1200px;
+
+        position: relative;
+
+        margin: 0;
+
         perspective: 1200px;
-        transition: 1s;
+        -webkit-perspective: 1200px;
       }
-      .card:hover {
-        transform: rotate(-5deg);
-      }
-      .card:hover .outside {
-        transform: rotateY(-130deg);
-      }
-      .outside,
+
+      /* =========================
+       INSIDE
+    ========================= */
+
       .inside {
         height: 100%;
         width: 50%;
+
         position: absolute;
-        left: 50.1%;
-      }
-      .inside {
-        background-image: url(1void.png);
+        left: 50%;
+
+        background-image: url("1void.png");
         background-size: 100% 100%;
+        background-position: center;
+
         line-height: 3;
+
         padding: 0 20px;
+
         text-align: center;
+
         display: flex;
         flex-direction: column;
+
         justify-content: space-around;
         align-items: center;
-        left: 50%;
       }
+
+      /* =========================
+       OUTSIDE
+    ========================= */
+
       .outside {
-        -webkit-transform-style: preserve-3d;
+        height: 100%;
+        width: 50%;
+
+        position: absolute;
+        left: 50.1%;
+
+        z-index: 2;
+
         transform-style: preserve-3d;
-        z-index: 1;
-        transform-origin: left;
-        transition: 2s;
+        -webkit-transform-style: preserve-3d;
+
+        transform-origin: left center;
+
+        transition: transform 2s ease;
+
         cursor: pointer;
       }
+
+      /* =========================
+       FRONT / BACK
+    ========================= */
+
       .front,
       .back {
         height: 100%;
         width: 100%;
+
         position: absolute;
-        -webkit-backface-visibility: hidden;
+
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+
         transform: rotateX(0deg);
       }
+
       .front {
         background-image: url("Snapchat-123234625.jpg");
+
         background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
       }
+
       .back {
         transform: rotateY(180deg);
+
         background-image: url("void.png");
+
         background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
       }
+
+      /* =========================
+       OPEN CARD
+    ========================= */
+
+      .card.open .outside {
+        transform: rotateY(-130deg);
+      }
+
+      /* =========================
+       CAKE
+       
+       These values are intentionally
+       kept exactly at the original
+       card proportions.
+    ========================= */
 
       .cake {
         width: 100%;
+
         position: absolute;
+
         bottom: 30px;
       }
+
       .top-layer,
       .middle-layer,
       .bottom-layer {
         height: 80px;
         width: 240px;
+
         background-repeat: repeat;
         background-size: 60px 100px;
         background-position: 28px 0;
+
         background-image:
           linear-gradient(
             transparent 50px,
@@ -117,21 +241,32 @@
             transparent 60px
           ),
           radial-gradient(circle at 30px 5px, #994c10 30px, #fcbf29 31px);
+
         border-radius: 10px 10px 0 0;
+
         position: relative;
+
         margin: auto;
       }
+
       .middle-layer {
         transform: scale(0.85);
         top: 6px;
       }
+
       .top-layer {
         transform: scale(0.7);
         top: 26px;
       }
+
+      /* =========================
+       CANDLE
+    ========================= */
+
       .candle {
         height: 45px;
         width: 15px;
+
         background: repeating-linear-gradient(
           45deg,
           #fd3018 0,
@@ -139,68 +274,216 @@
           #ffa89e 5px,
           #ffa89e 10px
         );
+
         position: absolute;
+
         margin: auto;
+
         left: 0;
         right: 0;
+
         bottom: 202px;
       }
-      .candle:before {
+
+      .candle::before {
         content: "";
+
         position: absolute;
+
         height: 16px;
         width: 16px;
+
         background-color: #ffa500;
+
         border-radius: 0 50% 50% 50%;
+
         bottom: 48px;
+
         transform: rotate(45deg);
+
         left: -1px;
       }
+
+      /* =========================
+       FRONT TEXT
+    ========================= */
+
       .outside p {
         font-family: "Comic Sans MS", "Comic Sans", cursive;
+
         font-size: 23px;
+
         text-transform: uppercase;
+
         margin-top: 30px;
+
         text-align: center;
+
         letter-spacing: 6px;
+
         color: #000046;
       }
+
+      /* =========================
+       INSIDE TEXT
+    ========================= */
+
       .inside h1 {
         font-family: "Comic Sans MS", "Comic Sans", cursive;
 
         font-size: 60px;
+
         line-height: 120px;
       }
+
       .inside p {
         font-family: "Comic Sans MS", "Comic Sans", cursive;
+
         color: #ad04b3;
+
         font-size: 20px;
+
         line-height: 40px;
+      }
+
+      /* =========================
+       SMALL PHONES
+       
+       Only changes the viewport
+       behavior. The actual card
+       proportions stay untouched.
+    ========================= */
+
+      @media (max-width: 480px) {
+        .card-frame {
+          width: 94vw;
+        }
+      }
+
+      /* =========================
+       VERY SHORT SCREENS
+       
+       Helps landscape phones and
+       small-height windows.
+    ========================= */
+
+      @media (max-height: 500px) {
+        .card-frame {
+          height: 90dvh;
+          width: auto;
+          aspect-ratio: 640 / 400;
+        }
       }
     </style>
   </head>
+
   <body>
-    <div class="card">
-      <div class="outside">
-        <div class="front">
-          <p>Happy Birthday Miri</p>
-          <div class="cake">
-            <div class="top-layer"></div>
-            <div class="middle-layer"></div>
-            <div class="bottom-layer"></div>
-            <div class="candle"></div>
+    <!-- =========================
+       MUSIC
+  ========================= -->
+
+    <audio id="bg-music" loop preload="auto">
+      <source src="gib.mp3" type="audio/mpeg" />
+    </audio>
+
+    <!-- =========================
+       RESPONSIVE CARD
+  ========================= -->
+
+    <div class="card-frame">
+      <div class="card-scale">
+        <div class="card">
+          <!-- OUTSIDE OF CARD -->
+
+          <div class="outside">
+            <!-- FRONT -->
+
+            <div class="front">
+              <p>Happy Birthday Miri</p>
+
+              <div class="cake">
+                <div class="top-layer"></div>
+
+                <div class="middle-layer"></div>
+
+                <div class="bottom-layer"></div>
+
+                <div class="candle"></div>
+              </div>
+            </div>
+
+            <!-- BACK -->
+
+            <div class="back"></div>
+          </div>
+
+          <!-- INSIDE OF CARD -->
+
+          <div class="inside">
+            <p>
+              happy birthday to the sweetest and kindest soul ik i hope every
+              birthday you have is filled with joy and laughter i love you a ton
+              and i hope you have the best birthday ever!-love psynon:3
+            </p>
+
+            <h1>&#127873;</h1>
           </div>
         </div>
-        <div class="back"></div>
-      </div>
-      <div class="inside">
-        <p>
-          happy birthday to the sweetest and kindest soul ik i hope every
-          birthday you have is filled with joy and laughter i love you a ton and
-          i hope you have the best birthday ever!-love psynon:3
-        </p>
-        <h1>&#127873;</h1>
       </div>
     </div>
+
+    <script>
+      /* =========================
+       RESPONSIVE SCALING
+       
+       Calculates the correct scale
+       whenever the screen changes size.
+    ========================= */
+
+      const frame = document.querySelector(".card-frame");
+
+      function resizeCard() {
+        const frameWidth = frame.clientWidth;
+        const scale = frameWidth / 640;
+
+        frame.style.setProperty("--card-scale", scale);
+      }
+
+      /* Resize when the page loads */
+      resizeCard();
+
+      /* Resize when the browser changes size */
+      window.addEventListener("resize", resizeCard);
+
+      /* ResizeObserver handles phones/tablets
+       and other layout changes */
+      if ("ResizeObserver" in window) {
+        const observer = new ResizeObserver(resizeCard);
+        observer.observe(frame);
+      }
+
+      /* =========================
+       CARD OPEN / CLOSE
+       
+       Works with:
+       - Mouse
+       - Touch
+       - Phone taps
+    ========================= */
+
+      const card = document.querySelector(".card");
+      const music = document.getElementById("bg-music");
+
+      card.addEventListener("click", function () {
+        card.classList.toggle("open");
+
+        /* Start music after the user's
+         interaction, which browsers allow. */
+
+        music.play().catch(() => {
+          console.log("Music could not start.");
+        });
+      });
+    </script>
   </body>
 </html>
